@@ -1,0 +1,54 @@
+<launch>
+  <arg name="online" default="true"/>
+  <arg name="left" default="left" />
+  <arg name="right" default="right" />
+  <arg name="approximate_sync" default="false" />
+
+  <group if="$(arg online)">
+    <!-- Basic driver for left camera -->
+    <include file="$(find usb_cam)/launch/usb_cam.launch" ns="$(arg left)">
+       <arg name="view" value="false"/>
+       <arg name="video_device_src" value="/dev/video2"/>
+      <arg name="camera_info_src" value="$(find usb_cam)/camera_info/left.yaml"/>
+      <arg name="camera_name_src" value="leopard_left"/>
+    </include>
+
+    <!-- Basic driver for right camera -->
+    <include file="$(find usb_cam)/launch/usb_cam.launch" ns="$(arg right)">
+       <arg name="view" value="false"/>
+       <arg name="video_device_src" value="/dev/video4"/>
+      <arg name="camera_info_src" value="$(find usb_cam)/camera_info/right.yaml"/>
+      <arg name="camera_name_src" value="leopard_right"/>
+    </include>
+
+    <!-- Basic processing for left camera -->
+    <include file="$(find usb_cam)/launch/image_rectify.launch" ns="$(arg left)">
+      <arg name="union_info_src" default="$(find usb_cam)/camera_info/latest.yaml"/>
+      <arg name="camera_info_src" default="$(find usb_cam)/camera_info/left.yaml"/>
+    </include>
+
+    <!-- Basic processing for right camera -->
+    <include file="$(find usb_cam)/launch/image_rectify.launch" ns="$(arg right)">
+      <arg name="union_info_src" default="$(find usb_cam)/camera_info/latest.yaml"/>
+      <arg name="camera_info_src" default="$(find usb_cam)/camera_info/right.yaml"/>
+    </include>
+  </group>
+
+  <group unless="$(arg online)">
+    <!-- Basic processing for left camera -->
+      <include file="$(find usb_cam)/launch/image_rectify.launch" ns="$(arg left)">
+        <arg name="union_info_src" value="$(find usb_cam)/camera_info/latest.yaml"/>
+        <arg name="camera_info_src" value="$(find usb_cam)/camera_info/left.yaml"/>
+        <arg name="camera_name_src" value="usb_cam" />
+      </include>
+
+    <!-- Basic processing for right camera -->
+      <include file="$(find usb_cam)/launch/image_rectify.launch" ns="$(arg right)">
+        <arg name="union_info_src" value="$(find usb_cam)/camera_info/latest.yaml"/>
+        <arg name="camera_info_src" value="$(find usb_cam)/camera_info/right.yaml"/>
+        <arg name="camera_name_src" value="usb_cam" />
+      </include>
+  </group>
+
+</launch>
+

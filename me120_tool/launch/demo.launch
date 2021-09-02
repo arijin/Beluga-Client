@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find wamv_gazebo)/launch/wamv_display.launch" />
+  <!-- <node name="me120_tf" pkg="me120_tf" type="me120_tf_node" output="screen" /> -->
+  <include file="$(find rviz_satellite)/launch/demo.launch" />
+</launch>
+
